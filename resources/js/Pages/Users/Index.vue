@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="min-h-screen">
     <Head title="Users" />
     <div class="flex justify-between mb-3">
       <h1 class="text-3xl font-semibold">Users</h1>
