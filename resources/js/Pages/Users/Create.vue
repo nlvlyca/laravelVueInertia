@@ -4,7 +4,7 @@
   <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">
     Create new user
   </h2>
-  <form @submit.prevent="submit">
+  <form @submit.prevent="submit" class="min-h-screen">
     <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
       <div class="sm:col-span-2">
         <label
@@ -76,10 +76,16 @@
     >
       Submit
     </button>
+    <Link
+      href="/users"
+      class="inline-flex border items-center ml-1 px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-500 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-gray-400"
+    >
+      Back to Table</Link
+    >
   </form>
 </template>
 <script setup>
-import { useForm } from "@inertiajs/vue3";
+import { useForm, Link } from "@inertiajs/vue3";
 
 defineProps({
   errors: Object,

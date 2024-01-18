@@ -1,9 +1,8 @@
 <template>
   <Link
-    class="text-black rounded hover:underline"
+    class="flex items-center p-3 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
     :class="{
-      'font-bold bg-gray-400 text-white rounded p-2.5 hover:no-underline':
-        isActive,
+      'bg-gray-100': isActive,
     }"
   >
     <slot />

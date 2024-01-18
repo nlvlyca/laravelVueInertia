@@ -35,8 +35,9 @@
               >
                 {{ user.name }}
               </th>
-              <td v-if="user.can.edit" class="px-6 py-4 text-right">
+              <td class="px-6 py-4 text-right">
                 <Link
+                  v-if="user.can.edit"
                   :href="'/users/edit/' + user.id"
                   class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                   >Edit</Link
@@ -57,6 +58,7 @@ import Pagination from "../Shared/Pagination.vue";
 import { ref, watch } from "vue";
 import { router } from "@inertiajs/vue3";
 import debounce from "lodash/debounce";
+import toast from "../Shared/toast";
 let props = defineProps({
   users: Object,
   filters: Object,

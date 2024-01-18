@@ -41,11 +41,11 @@ class HandleInertiaRequests extends Middleware
             'appName' => config('app.name'),
             'auth'=> fn() => Auth::user() ? [
                 'user'=> [
-                    'username'=> Auth::user()->name
+                    'username'=> Auth::user()->name,
+                    'email'=>Auth::user()->email,
                 ]
-            ] : ['user'=> [
-                'username'=> 'Usersss'
-            ]]
+            ] : null,
+            'toast' => fn() => session('toast')
         ]);
     }
 }

@@ -59,3 +59,12 @@
     </div>
   </div>
 </template>
+<script setup>
+// import toast from "./Shared/toast";
+// function addToast() {
+//   toast.add({
+//     message: "Hello from dashboard",
+//   });
+// }
+</script>
+

@@ -23,15 +23,13 @@ Route::post('logout', [LoginController::class, 'destroy'])->middleware('auth');
 
 Route::middleware('auth')->group(function (){
 Route::get('/', function () {
-    return Inertia::render('Home', [
-        'name'=>'John Doe'
-    ]);
+    return Inertia::render('Home');
 });
 
 Route::get('/users', function () {
     // sleep(2);
     return Inertia::render('Users/Index', [
-        'users' => User::query()
+        'users' => User::query()->where('id','!=', Auth::user()->id)
         ->when(Request::input('search'), function ($query, $search){
             $query->where('name', 'like', "%{$search}%");
         })
@@ -49,12 +47,13 @@ Route::get('/users', function () {
             'createUser' => Auth::user()->can('create', User::class)
         ]
 
-    ]);
+        ]);
 });
+
 
 Route::get('/users/create', function () {
     return Inertia::render('Users/Create');
-})->can('can:create,App\Models\User'); //lower version of laravel: middleware('can:create,App\Models\User')
+})->middleware('can:create,App\Models\User'); //lower version of laravel: middleware('can:create,App\Models\User') ->can('can:create,App\Models\User')
 
 Route::get('/users/edit/{id}', function ($id) {
     return Inertia::render('Users/Update',[
@@ -62,15 +61,39 @@ Route::get('/users/edit/{id}', function ($id) {
     ]);
 });
 
+Route::post('/profile/saveChanges/{id}', function($id){
+    $hashedPassword = User::find($id)->password;
+    if (Hash::check(Request::input('old_password'), $hashedPassword)) {
+        $attributes = [
+            'password'=> Hash::make(Request::input('new_password'))
+        ];
+        $notification = array(
+            'message' => 'Successfully Done password',
+            'type' => 'success'
+        );
+        User::query()->where('id', $id)->update($attributes);
+        return redirect()->intended('/')->with('toast', $notification);
+        }
+        $notification = array(
+            'message' => 'Old password does not match',
+            'type' => 'warning'
+        );
+
+        return redirect('/profile')->with('toast', $notification);
+});
+
 Route::post('/users/saveChanges/{id}', function($id){
     $attributes = Request::validate([
         'name'=>'required',
         'email'=> ['required','email'],
     ]);
+    $notification = array(
+        'message' => 'Successfully Done',
+        'type' => 'success'
+    );
 
     User::query()->where('id', $id)->update($attributes);
-
-    return redirect('/users');
+    return redirect('/users')->with('toast', $notification);
 });
 
 Route::post('/users', function () {
@@ -79,15 +102,27 @@ Route::post('/users', function () {
         'email'=> ['required','email'],
         'password'=>'required'
     ]);
+    
 
     User::create($attributes);
-
-    return redirect('/users');
+    $notification = array(
+        'message' => 'Successfully Done',
+        'type' => 'success'
+    );
+    return redirect('/users')->with('toast', $notification);
 });
 
 Route::get('/settings', function () {
     return Inertia::render('Settings');
 });
+
+Route::get('/profile', function () {
+    return Inertia::render('Profile', [
+        'userID'=> Auth::user()->id
+    ]);
+});
+
+
 
 
 

@@ -38,7 +38,8 @@
             :class="{ 'font-bold underline': $page.component === 'Settings' }"
             >Settings</Link
           > -->
-          <NavLink href="/logout" method="post" as="button">Log Out</NavLink>
+          <ProfileDropdown />
+          <!-- <NavLink href="/logout" method="post" as="button">Log Out</NavLink> -->
         </li>
       </ul>
     </nav>
@@ -46,7 +47,8 @@
 </template>
 <script>
 import NavLink from "./NavLink.vue";
+import ProfileDropdown from "./ProfileDropdown.vue";
 export default {
-  components: { NavLink },
+  components: { NavLink, ProfileDropdown },
 };
 </script>
