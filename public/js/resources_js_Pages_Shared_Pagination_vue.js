@@ -36,11 +36,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)(link.url ? 'Link' : 'span'), {
       href: link.url,
       key: link,
-      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["px-1", {
-        'text-gray-500': !link.url,
-        'font-bold': link.active
+      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["mx-0.5 rounded-md border px-4 py-2", {
+        'text-gray-300': !link.url,
+        'font-bold bg-white border-gray-400': link.active,
+        'bg-gray-50': !link.active
       }]),
-      innerHTML: link.label
+      innerHTML: "".concat(link.label)
     }, null, 8 /* PROPS */, ["href", "class", "innerHTML"]);
   }), 128 /* KEYED_FRAGMENT */))]);
 }

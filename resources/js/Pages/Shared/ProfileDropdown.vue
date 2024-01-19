@@ -88,6 +88,15 @@ export default {
       showDropdown: false,
     };
   },
+  mounted() {
+    if (this.$page.component != "Profile") {
+      this.showDropdown = false;
+    } else {
+      setTimeout(() => {
+        this.showDropdown = false;
+      }, 500);
+    }
+  },
 };
 </script>
 <script setup>

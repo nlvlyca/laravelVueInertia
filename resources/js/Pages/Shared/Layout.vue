@@ -33,19 +33,19 @@
         <Sidebar />
       </aside>
     </section>
-    <section class="p-5 relative ml-64 mt-5">
-      <div class="max-w-4xl mx-auto">
+    <section class="p-5 relative ml-64">
+      <div class="max-w-6xl mx-auto">
         <slot />
+        <footer class="my-10">
+          <div class="">
+            <div class="flex justify-between text-xs font-semibold">
+              <h1>Developed by LJU | NetlinkVoice</h1>
+              <h1>All rights reserved @ 2024</h1>
+            </div>
+          </div>
+        </footer>
       </div>
     </section>
-    <footer class="my-10 ml-64">
-      <div class="max-w-4xl mx-auto">
-        <div class="flex justify-between text-xs font-semibold">
-          <h1>Developed by LJU | NetlinkVoice</h1>
-          <h1>All rights reserved @ 2024</h1>
-        </div>
-      </div>
-    </footer>
   </div>
 </template>
 <script>

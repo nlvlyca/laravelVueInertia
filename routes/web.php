@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use Inertia\Inertia;
 use App\Models\User;
+use App\Models\Announcements;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,8 +24,37 @@ Route::post('logout', [LoginController::class, 'destroy'])->middleware('auth');
 
 Route::middleware('auth')->group(function (){
 Route::get('/', function () {
-    return Inertia::render('Home');
+    $total = User::query()->select(User::raw('COUNT(*) as cnt'))->where('id','!=', Auth::user()->id)->whereYear('created_at', '2024')->get();
+    $total2 = Announcements::query()->select(Announcements::raw('COUNT(*) as cnt'))->whereYear('created_at', '2024')->get();
+    $temp = [];
+    $temp2 = [];
+    $temp3 = [];
+    $allBar = [];
+
+    $totalGender1 = User::query()->select(User::raw('COUNT(*) as cnt'))->where('gender','male')->get();
+    array_push($temp2, $totalGender1[0]['cnt']);
+    $totalGender2 = User::query()->select(User::raw('COUNT(*) as cnt'))->where('gender','female')->get();
+    array_push($temp2, $totalGender2[0]['cnt']);
+    
+
+    for($i = 1; $i <= 12; $i++){
+        $my = User::query()->select(User::raw('COUNT(*) as cnt'))->where('id','!=', Auth::user()->id)->whereMonth('created_at', $i)->whereYear('created_at', '2024')->get();
+        // $per = ((int)$my[0]['cnt'] / (int)$total[0]['cnt']) * 100;
+        array_push($temp, $my[0]['cnt']);
+    }
+    for($x = 1; $x <= 12; $x++){
+        $my = Announcements::query()->select(Announcements::raw('COUNT(*) as cnt'))->whereMonth('created_at', $x)->whereYear('created_at', '2024')->get();
+        // $per = ((int)$my[0]['cnt'] / (int)$total[0]['cnt']) * 100;
+        array_push($temp3, $my[0]['cnt']);
+    }
+    $allBar = ['usd'=> $temp, 'and'=>$temp3];
+    return Inertia::render('Home', [
+        'barGraphTotal'=> $allBar,
+        'genderTotal'=> $temp2
+    ]);
 });
+
+
 
 Route::get('/users', function () {
     // sleep(2);
@@ -33,7 +63,7 @@ Route::get('/users', function () {
         ->when(Request::input('search'), function ($query, $search){
             $query->where('name', 'like', "%{$search}%");
         })
-        ->paginate(5)
+        ->paginate(10)
         ->withQueryString()
         ->through(fn($user) => [
             'id'=>$user->id,
@@ -86,6 +116,7 @@ Route::post('/users/saveChanges/{id}', function($id){
     $attributes = Request::validate([
         'name'=>'required',
         'email'=> ['required','email'],
+        'gender'=> 'required'
     ]);
     $notification = array(
         'message' => 'Successfully Done',
@@ -100,7 +131,8 @@ Route::post('/users', function () {
     $attributes = Request::validate([
         'name'=>'required',
         'email'=> ['required','email'],
-        'password'=>'required'
+        'password'=>'required',
+        'gender'=>'required'
     ]);
     
 
@@ -114,6 +146,69 @@ Route::post('/users', function () {
 
 Route::get('/settings', function () {
     return Inertia::render('Settings');
+});
+
+Route::get('/announcements', function () {
+    return Inertia::render('Announcements/Index', [
+        'ann' => Announcements::query()
+        ->when(Request::input('search'), function ($query, $search){
+            $query->where('title', 'like', "%{$search}%");
+        })
+        ->paginate(10)
+        ->withQueryString()
+        ->through(fn($announcements) => [
+            'id'=>$announcements->id,
+            'title'=>$announcements->title,
+            'description'=>$announcements->description,
+            'can'=>[
+                'edit'=>Auth::user()->can('edit',$announcements)
+            ]
+        ]),
+        'filters'=> Request::only(['search']),
+        'can'=> [
+            'createUser' => Auth::user()->can('create', User::class)
+        ]
+
+        ]);
+});
+
+Route::get('/announcements/create', function () {
+    return Inertia::render('Announcements/Create');
+})->middleware('can:create, App\Models\User');
+
+Route::get('/announcements/edit/{id}', function ($id) {
+    return Inertia::render('Announcements/Update',[
+        'annData'=> Announcements::find($id)
+    ]);
+});
+
+Route::post('/announcements', function () {
+    $attributes = Request::validate([
+        'title'=>'required',
+        'description'=>'required'
+    ]);
+    
+
+    Announcements::create($attributes);
+    $notification = array(
+        'message' => 'Successfully Done',
+        'type' => 'success'
+    );
+    return redirect('/announcements')->with('toast', $notification);
+});
+
+Route::post('/announcements/saveChanges/{id}', function($id){
+    $attributes = Request::validate([
+        'title'=>'required',
+        'description'=>'required'
+    ]);
+    $notification = array(
+        'message' => 'Successfully Done',
+        'type' => 'success'
+    );
+
+    Announcements::query()->where('id', $id)->update($attributes);
+    return redirect('/announcements')->with('toast', $notification);
 });
 
 Route::get('/profile', function () {

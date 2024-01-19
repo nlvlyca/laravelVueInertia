@@ -1,68 +1,43 @@
 <template>
-  <Head title="Update User" />
+  <Head title="Update Announcements" />
 
   <h2 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">
-    Update user
+    Update announcement
   </h2>
   <form @submit.prevent="submit" class="min-h-screen">
     <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
       <div class="sm:col-span-2">
         <label
-          for="name"
+          for="title"
           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Name</label
+          >Title</label
         >
         <input
           type="text"
-          name="name"
-          v-model="form.name"
-          id="name"
+          name="title"
+          id="title"
+          v-model="form.title"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-          placeholder="Type your name"
+          placeholder="Type title"
           required
         />
-        <div
-          class="text-xs text-red-500 mt-1"
-          v-if="form.errors.name"
-          v-text="form.errors.name"
-        ></div>
       </div>
       <div class="sm:col-span-2">
         <label
-          for="email"
+          for="desc"
           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Email Address</label
+          >Description</label
         >
-        <input
+        <textarea
+          v-model="form.description"
           type="text"
-          name="email"
-          id="email"
-          v-model="form.email"
+          name="desc"
+          rows="5"
+          id="desc"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-          placeholder="Type your email"
+          placeholder="Type the description"
           required
-        />
-        <div
-          class="text-xs text-red-500 mt-1"
-          v-if="form.errors.email"
-          v-text="form.errors.email"
-        ></div>
-      </div>
-      <div class="sm:col-span-2">
-        <label
-          for="gender"
-          class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >Gender</label
-        >
-        <select
-          id="gender"
-          v-model="form.gender"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        >
-          <option selected>Choose a country</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
+        ></textarea>
       </div>
     </div>
     <button
@@ -73,7 +48,7 @@
       Submit
     </button>
     <Link
-      href="/users"
+      href="/announcements"
       class="inline-flex border items-center ml-1 px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-gray-500 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-gray-400"
     >
       Back to Table</Link
@@ -90,13 +65,12 @@ defineProps({
 });
 
 let form = useForm({
-  name: page.props.userdata.name,
-  email: page.props.userdata.email,
-  gender: page.props.userdata.gender,
+  title: page.props.annData.title,
+  description: page.props.annData.description,
 });
 
 let submit = () => {
-  form.post("/users/saveChanges/" + page.props.userdata.id);
+  form.post("/announcements/saveChanges/" + page.props.annData.id);
   // router.post("/users", form, {
   //   onStart: () => {
   //     processing.value = true;
